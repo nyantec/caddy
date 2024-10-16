@@ -384,7 +384,6 @@ func getReqTLSReplacement(req *http.Request, key string) (any, bool) {
 	}
 
 	field := strings.ToLower(key[len(reqTLSReplPrefix):])
-
 	if strings.HasPrefix(field, "client.") {
 		cert := getTLSPeerCert(req.TLS)
 		if cert == nil {
@@ -409,6 +408,10 @@ func getReqTLSReplacement(req *http.Request, key string) (any, bool) {
 			case strings.HasPrefix(field, "uris"):
 				fieldName = "uris"
 				fieldValue = cert.URIs
+			// Maybe there's a better place for this
+			case strings.HasPrefix(field, "uids"):
+				fieldName = "uids"
+				fieldValue = cert.Subject.Uid
 			default:
 				return nil, false
 			}
